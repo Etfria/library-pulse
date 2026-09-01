@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="_ds/nocturne-3b27b631-cbb7-4086-85ec-b3350d661237/styles.css">
+<script src="_ds/nocturne-3b27b631-cbb7-4086-85ec-b3350d661237/_ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<style>
+  body { background: var(--color-bg); color: var(--color-text); }
+  a { color: var(--color-accent); }
+  a:hover { color: var(--color-accent-300); }
+  select.input, input.input { accent-color: var(--color-accent); }
+  input[type=range] { accent-color: var(--color-accent); }
+  :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+</style>
+</helmet>
+<div style="min-height:100vh;background:var(--color-bg);padding:0 0 64px">
+
+  <header style="max-width:1280px;margin:0 auto;padding:40px 32px 24px;display:flex;flex-wrap:wrap;align-items:flex-end;gap:24px;justify-content:space-between">
+    <div>
+      <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent);margin-bottom:10px">Alma Analytics · Collection &amp; circulation</div>
+      <h1 style="font-size:44px;margin:0 0 8px">Library Pulse</h1>
+      <p style="margin:0;max-width:62ch;color:color-mix(in srgb, var(--color-text) 66%, transparent);font-size:15px;text-wrap:pretty">Circulation and collection activity for the UND libraries, drawn from four Alma Analytics reports. Figures are shown as exported; reporting periods differ by report and are labelled on each section.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;text-align:right;font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">
+      <div>Circulation window</div>
+      <div style="font-size:15px;color:var(--color-text)">{{ periodSpan }}</div>
+      <div>{{ periodLabel }}</div>
+      <div>{{ partialNote }}</div>
+      <div style="margin-top:6px;color:color-mix(in srgb, var(--color-text) 40%, transparent)">Data snapshot: August 17, 2026</div>
+    </div>
+  </header>
+
+  <div style="max-width:1280px;margin:0 auto;padding:0 32px;display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(238px,1fr))">
+    <div class="card elev-sm" style="padding:20px;gap:6px">
+      <div class="card-kicker">Loans · rolling 12-month period</div>
+      <div style="font-size:36px;font-family:var(--font-heading);line-height:1.05">{{ kpiLoans }}</div>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ periodSpan }} · partial endpoint months</div>
+    </div>
+    <div class="card elev-sm" style="padding:20px;gap:6px">
+      <div class="card-kicker">Physical items held</div>
+      <div style="font-size:36px;font-family:var(--font-heading);line-height:1.05">{{ kpiItems }}</div>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Current snapshot · cross-checked against two sources</div>
+    </div>
+    <div class="card elev-sm" style="padding:20px;gap:6px">
+      <div class="card-kicker">Peak circulation month</div>
+      <div style="font-size:36px;font-family:var(--font-heading);line-height:1.05">{{ kpiPeakMonth }}</div>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ kpiPeakLoans }} loans</div>
+    </div>
+    <div class="card elev-sm" style="padding:20px;gap:6px">
+      <div class="card-kicker">Largest material type</div>
+      <div style="font-size:36px;font-family:var(--font-heading);line-height:1.05">{{ kpiTopMaterial }}</div>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">{{ kpiTopMaterialCount }} items</div>
+    </div>
+  </div>
+
+  <section style="max-width:1280px;margin:0 auto;padding:56px 32px 0">
+    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:16px;justify-content:space-between;margin-bottom:6px">
+      <h2 style="font-size:26px;margin:0">Circulation trend</h2>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Loans per calendar month</div>
+    </div>
+    <p style="margin:0 0 20px;max-width:70ch;font-size:13px;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Loans per calendar month across the reported circulation window.</p>
+
+    <div class="card elev-sm" style="padding:24px 24px 16px;gap:16px">
+      <div style="display:flex;flex-wrap:wrap;gap:32px">
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Total loans</span>
+          <span style="font-size:22px;font-family:var(--font-heading)">{{ kpiLoans }}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Peak month</span>
+          <span style="font-size:22px;font-family:var(--font-heading)">{{ peakLabel }}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Lowest complete month</span>
+          <span style="font-size:22px;font-family:var(--font-heading)">{{ lowLabel }}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:2px;margin-left:auto;text-align:right">
+          <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Hovered month</span>
+          <span style="font-size:22px;font-family:var(--font-heading);color:var(--color-accent-300)">{{ monthReadout }}</span>
+        </div>
+      </div>
+      <svg viewBox="0 0 1000 340" role="img" aria-label="Loans by month" style="width:100%;height:auto;display:block;overflow:visible">
+        <sc-for list="{{ line.yTicks }}" as="t" hint-placeholder-count="5">
+          <line x1="64" x2="984" y1="{{ t.y }}" y2="{{ t.y }}" stroke="#3f424d" stroke-width="1"></line>
+        </sc-for>
+        <g>{{ line.labels }}</g>
+        <polyline points="{{ line.points }}" fill="none" stroke="var(--color-accent)" stroke-width="2.5" stroke-linejoin="round"></polyline>
+        <sc-for list="{{ line.pts }}" as="p" hint-placeholder-count="13">
+          <circle cx="{{ p.cx }}" cy="{{ p.cy }}" r="{{ p.r }}" fill="{{ p.fill }}" stroke="var(--color-bg)" stroke-width="2" onMouseEnter="{{ p.onEnter }}" onMouseLeave="{{ p.onLeave }}" style="cursor:crosshair"></circle>
+        </sc-for>
+      </svg>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 45%, transparent)">Reporting period: {{ periodLabel }} — {{ periodSpan }}. {{ partialNote }}, so the first and last points on this line are not full months.</div>
+    </div>
+  </section>
+
+  <section style="max-width:1280px;margin:0 auto;padding:56px 32px 0">
+    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:16px;justify-content:space-between;margin-bottom:6px">
+      <h2 style="font-size:26px;margin:0">Who is borrowing?</h2>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Loans by borrower type</div>
+    </div>
+    <p style="margin:0 0 20px;max-width:70ch;font-size:13px;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Loans by borrower type for a single calendar year. This information covers many years and is independent of the rolling circulation window above.</p>
+
+    <div class="card elev-sm" style="padding:24px;gap:20px">
+      <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end">
+        <label class="field" style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Loan year</span>
+          <select class="input" style="min-width:140px" value="{{ pYear }}" onChange="{{ onYear }}">
+            <sc-for list="{{ years }}" as="y" hint-placeholder-count="4">
+              <option value="{{ y.value }}">{{ y.label }}</option>
+            </sc-for>
+          </select>
+        </label>
+        <label class="field" style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Library</span>
+          <select class="input" style="min-width:260px" value="{{ pLib }}" onChange="{{ onPLib }}">
+            <sc-for list="{{ patronLibs }}" as="l" hint-placeholder-count="6">
+              <option value="{{ l }}">{{ l }}</option>
+            </sc-for>
+          </select>
+        </label>
+        <div style="margin-left:auto;text-align:right">
+          <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Loans in view</div>
+          <div style="font-size:22px;font-family:var(--font-heading)">{{ patronTotal }}</div>
+        </div>
+      </div>
+
+      <sc-if value="{{ yearIncomplete }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:12px;color:var(--color-accent-300)">{{ yearLabel }} — an incomplete calendar year in the export; its totals are lower than a full year for that reason.</div>
+      </sc-if>
+      <sc-if value="{{ patronEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:14px;color:color-mix(in srgb, var(--color-text) 60%, transparent);padding:12px 0">No loans are recorded for this year and library.</div>
+      </sc-if>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ patronBars }}" as="b" hint-placeholder-count="8">
+          <div style="display:grid;grid-template-columns:230px 1fr 92px 62px;align-items:center;gap:14px;font-size:13px;padding:3px 0;border-radius:4px" style-hover="background:color-mix(in srgb, var(--color-text) 5%, transparent)">
+            <span style="color:var(--color-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ b.group }}</span>
+            <span style="display:block;height:16px;background:color-mix(in srgb, var(--color-text) 6%, transparent);border-radius:3px">
+              <span style="display:block;height:16px;border-radius:3px;background:var(--color-accent-500);width:{{ b.w }}"></span>
+            </span>
+            <span style="text-align:right;font-variant-numeric:tabular-nums">{{ b.loans }}</span>
+            <span style="text-align:right;font-variant-numeric:tabular-nums;color:color-mix(in srgb, var(--color-text) 60%, transparent)">{{ b.pct }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding-top:4px">
+        <button class="btn btn-secondary" onClick="{{ toggleYoy }}" style="font-size:13px">{{ yoyLabel }}</button>
+        <span style="font-size:12px;color:color-mix(in srgb, var(--color-text) 45%, transparent)">{{ yoyHint }}</span>
+      </div>
+      <sc-if value="{{ yoyOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:8px;padding:4px 0 0">
+          <div style="display:grid;grid-template-columns:200px 74px 74px 1fr 78px 68px;align-items:center;gap:12px;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent)">
+            <span>Borrower type</span>
+            <span style="text-align:right">{{ yoyPrev }}</span>
+            <span style="text-align:right">{{ yoyCurr }}</span>
+            <span style="text-align:center">Decrease · increase</span>
+            <span style="text-align:right">Change</span>
+            <span style="text-align:right">Percent</span>
+          </div>
+          <sc-for list="{{ yoyRows }}" as="r" hint-placeholder-count="8">
+            <div style="display:grid;grid-template-columns:200px 74px 74px 1fr 78px 68px;align-items:center;gap:12px;font-size:13px;padding:2px 0;border-radius:4px" style-hover="background:color-mix(in srgb, var(--color-text) 5%, transparent)">
+              <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:{{ r.labelColor }}">{{ r.group }}</span>
+              <span style="text-align:right;font-variant-numeric:tabular-nums;color:color-mix(in srgb, var(--color-text) 70%, transparent)">{{ r.prev }}</span>
+              <span style="text-align:right;font-variant-numeric:tabular-nums">{{ r.curr }}</span>
+              <span style="display:flex;align-items:center;height:14px">
+                <span style="flex:1;display:flex;justify-content:flex-end"><span style="display:block;height:14px;border-radius:2px 0 0 2px;background:var(--color-neutral-400);width:{{ r.negW }}"></span></span>
+                <span style="width:1px;height:14px;background:color-mix(in srgb, var(--color-text) 22%, transparent)"></span>
+                <span style="flex:1"><span style="display:block;height:14px;border-radius:0 2px 2px 0;background:var(--color-accent-500);width:{{ r.posW }}"></span></span>
+              </span>
+              <span style="text-align:right;font-variant-numeric:tabular-nums;color:{{ r.deltaColor }}">{{ r.delta }}</span>
+              <span style="text-align:right;font-variant-numeric:tabular-nums;color:color-mix(in srgb, var(--color-text) 60%, transparent)">{{ r.pctChange }}</span>
+            </div>
+          </sc-for>
+          <div style="display:flex;gap:12px;align-items:center">
+            <button class="btn btn-ghost" onClick="{{ toggleYoyAll }}" style="font-size:12px">{{ yoyAllLabel }}</button>
+            <span style="font-size:12px;color:color-mix(in srgb, var(--color-text) 45%, transparent)">{{ yoyNote }}</span>
+          </div>
+        </div>
+      </sc-if>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 45%, transparent)">Percentages are of loans shown for the selected year and library filter. Rows the export left blank appear as “(no user group recorded)” rather than being merged or dropped.</div>
+    </div>
+  </section>
+
+  <section style="max-width:1280px;margin:0 auto;padding:56px 32px 0">
+    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:16px;justify-content:space-between;margin-bottom:6px">
+      <h2 style="font-size:26px;margin:0">Recorded collection utilization</h2>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Collection size and recorded use, by location</div>
+    </div>
+    <div style="border-left:2px solid var(--color-accent-600);padding:10px 0 10px 14px;margin:0 0 20px;max-width:78ch">
+      <p style="margin:0;font-size:13px;color:color-mix(in srgb, var(--color-text) 72%, transparent);text-wrap:pretty">The Loans values in this report are recorded, cumulative utilization measures supplied by Alma at the location level. They are not loans from the rolling circulation window shown above, and the two figures should not be compared or added.</p>
+    </div>
+
+    <div class="card elev-sm" style="padding:24px;gap:20px">
+      <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end">
+        <label class="field" style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Library</span>
+          <select class="input" style="min-width:260px" value="{{ invLib }}" onChange="{{ onInvLib }}">
+            <sc-for list="{{ invLibs }}" as="l" hint-placeholder-count="7">
+              <option value="{{ l }}">{{ l }}</option>
+            </sc-for>
+          </select>
+        </label>
+        <label style="display:flex;flex-direction:column;gap:6px;min-width:280px">
+          <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Minimum collection size — {{ minItemsLabel }} items</span>
+          <input type="range" min="0" max="5000" step="50" value="{{ minItems }}" onChange="{{ onMin }}" onInput="{{ onMin }}" style="width:100%">
+        </label>
+        <div style="margin-left:auto;text-align:right">
+          <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Locations in view</div>
+          <div style="font-size:22px;font-family:var(--font-heading)">{{ invCount }}</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:10px 28px;padding:14px 16px;border-radius:var(--radius-md);background:color-mix(in srgb, var(--color-text) 4%, transparent)">
+        <div style="display:flex;flex-direction:column;gap:2px;min-width:150px">
+          <span style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">{{ snapshot.heading }}</span>
+          <span style="font-size:13px;color:color-mix(in srgb, var(--color-text) 60%, transparent)">{{ snapshot.sub }}</span>
+        </div>
+        <sc-for list="{{ snapshot.stats }}" as="s" hint-placeholder-count="5">
+          <div style="display:flex;flex-direction:column;gap:1px;min-width:130px">
+            <span style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 50%, transparent)">{{ s.label }}</span>
+            <span style="font-size:15px;font-family:var(--font-heading)">{{ s.value }}</span>
+            <span style="font-size:11px;color:color-mix(in srgb, var(--color-text) 45%, transparent)">{{ s.note }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:grid;gap:28px;grid-template-columns:repeat(auto-fit,minmax(420px,1fr))">
+        <div style="position:relative">
+          <div style="font-size:13px;margin-bottom:4px;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Items held vs. recorded loans <span style="color:color-mix(in srgb, var(--color-text) 45%, transparent)">· logarithmic axes · click a point for its profile</span></div>
+          <div style="font-size:11px;margin-bottom:8px;max-width:60ch;color:color-mix(in srgb, var(--color-text) 50%, transparent);text-wrap:pretty">{{ scatter.medNote }}</div>
+          <svg viewBox="0 0 620 440" role="img" aria-label="Scatterplot of item count against recorded loans by location" style="width:100%;height:auto;display:block;overflow:visible">
+            <sc-for list="{{ scatter.yTicks }}" as="t" hint-placeholder-count="6">
+              <line x1="66" x2="608" y1="{{ t.y }}" y2="{{ t.y }}" stroke="#3f424d" stroke-width="1"></line>
+            </sc-for>
+            <sc-for list="{{ scatter.xTicks }}" as="t" hint-placeholder-count="6">
+              <line x1="{{ t.x }}" x2="{{ t.x }}" y1="20" y2="392" stroke="#2f323c" stroke-width="1"></line>
+            </sc-for>
+            <g>{{ scatter.labels }}</g>
+            <text x="66" y="436" fill="#9397ab" font-size="12">Items held →</text>
+            <line x1="{{ scatter.medX }}" x2="{{ scatter.medX }}" y1="20" y2="392" stroke="var(--color-accent-600)" stroke-width="1" stroke-dasharray="4 4"></line>
+            <line x1="66" x2="608" y1="{{ scatter.medY }}" y2="{{ scatter.medY }}" stroke="var(--color-accent-600)" stroke-width="1" stroke-dasharray="4 4"></line>
+            <sc-for list="{{ scatter.pts }}" as="p" hint-placeholder-count="40">
+              <circle cx="{{ p.cx }}" cy="{{ p.cy }}" r="{{ p.r }}" fill="{{ p.fill }}" stroke="{{ p.stroke }}" stroke-width="1" onMouseEnter="{{ p.onEnter }}" onMouseLeave="{{ p.onLeave }}" onClick="{{ p.onClick }}" style="cursor:pointer"></circle>
+            </sc-for>
+            <text x="8" y="16" fill="#9397ab" font-size="12">Loans (recorded) ↑</text>
+          </svg>
+          <sc-if value="{{ hoverPoint }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:26px;right:0;max-width:300px;background:var(--color-surface);box-shadow:var(--shadow-md);border-radius:var(--radius-md);padding:12px 14px;font-size:12px;display:flex;flex-direction:column;gap:4px;pointer-events:none">
+              <span style="font-family:var(--font-heading);font-size:14px">{{ hoverPoint.location }}</span>
+              <span style="color:var(--color-accent-300)">{{ hoverPoint.library }}</span>
+              <span>Items held: {{ hoverPoint.items }}</span>
+              <span>Loans (recorded): {{ hoverPoint.loans }}</span>
+              <span>Loans per item: {{ hoverPoint.ratio }}</span>
+            </div>
+          </sc-if>
+          <sc-if value="{{ profile }}" hint-placeholder-val="{{ false }}">
+            <div class="card" style="margin-top:12px;padding:16px;gap:10px;box-shadow:var(--shadow-sm)">
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <div style="flex:1">
+                  <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">Collection profile</div>
+                  <div style="font-family:var(--font-heading);font-size:16px">{{ profile.location }}</div>
+                  <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 60%, transparent)">{{ profile.library }}</div>
+                </div>
+                <button class="btn btn-ghost" onClick="{{ clearSel }}" style="font-size:12px">Clear</button>
+              </div>
+              <div style="display:grid;gap:10px 20px;grid-template-columns:repeat(auto-fit,minmax(132px,1fr))">
+                <sc-for list="{{ profile.stats }}" as="s" hint-placeholder-count="5">
+                  <div style="display:flex;flex-direction:column;gap:1px">
+                    <span style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 50%, transparent)">{{ s.label }}</span>
+                    <span style="font-size:15px;font-family:var(--font-heading);font-variant-numeric:tabular-nums">{{ s.value }}</span>
+                    <span style="font-size:11px;color:color-mix(in srgb, var(--color-text) 45%, transparent)">{{ s.note }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 45%, transparent)">{{ profile.zone }}</div>
+            </div>
+          </sc-if>
+        </div>
+
+        <div>
+          <div style="font-size:13px;margin-bottom:8px;color:color-mix(in srgb, var(--color-text) 70%, transparent)">Ranked by loans per item <span style="color:color-mix(in srgb, var(--color-text) 45%, transparent)">· locations meeting the size threshold</span></div>
+          <table class="table" style="width:100%;font-size:13px">
+            <thead>
+              <tr><th>Location</th><th style="text-align:right">Items</th><th style="text-align:right">Loans</th><th style="text-align:right">Loans per item</th></tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ invRanked }}" as="r" hint-placeholder-count="12">
+                <tr>
+                  <td><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:250px">{{ r.location }}</span><span style="font-size:11px;color:color-mix(in srgb, var(--color-text) 50%, transparent)">{{ r.library }}</span></td>
+                  <td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.items }}</td>
+                  <td style="text-align:right;font-variant-numeric:tabular-nums">{{ r.loans }}</td>
+                  <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--color-accent-300)">{{ r.ratio }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+          <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 45%, transparent);margin-top:10px">{{ invRankedNote }}</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;padding:14px 0 0;border-top:1px solid color-mix(in srgb, var(--color-text) 10%, transparent)">
+        <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">Collections to explore</div>
+        <div style="display:grid;gap:8px 24px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+          <sc-for list="{{ explore }}" as="e" hint-placeholder-count="4">
+            <div style="display:flex;gap:10px;align-items:baseline;font-size:13px">
+              <span style="color:var(--color-accent-300);white-space:nowrap;min-width:126px">{{ e.label }}</span>
+              <span style="color:color-mix(in srgb, var(--color-text) 78%, transparent);text-wrap:pretty">{{ e.text }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 45%, transparent)">{{ invBlankNote }}</div>
+    </div>
+  </section>
+
+  <section style="max-width:1280px;margin:0 auto;padding:56px 32px 0">
+    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:16px;justify-content:space-between;margin-bottom:6px">
+      <h2 style="font-size:26px;margin:0">Subject utilization</h2>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Recorded use by classification group · institution-wide</div>
+    </div>
+    <div style="border-left:2px solid var(--color-accent-600);padding:10px 0 10px 14px;margin:0 0 20px;max-width:78ch">
+      <p style="margin:0;font-size:13px;color:color-mix(in srgb, var(--color-text) 72%, transparent);text-wrap:pretty">Loans here are recorded, cumulative utilization measures at the classification level, not loans from the rolling 12-month circulation window, and the two figures should not be compared or added. This information carries no library breakdown, so the section covers all libraries together and does not follow the library filters used elsewhere.</p>
+    </div>
+
+    <div class="card elev-sm" style="padding:24px;gap:20px">
+      <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Rank by</span>
+          <div class="seg">
+            <sc-for list="{{ clsMetrics }}" as="m" hint-placeholder-count="3">
+              <button class="seg-opt" onClick="{{ m.onPick }}" style="background:{{ m.bg }};color:{{ m.fg }};font-size:13px;border:0;cursor:pointer;padding:7px 12px">{{ m.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <label class="field" style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Minimum items</span>
+          <select class="input" style="min-width:120px" value="{{ clsMin }}" onChange="{{ onClsMin }}">
+            <sc-for list="{{ clsMinOptions }}" as="o" hint-placeholder-count="5">
+              <option value="{{ o.value }}">{{ o.label }}</option>
+            </sc-for>
+          </select>
+        </label>
+        <label class="field" style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Search classifications</span>
+          <input class="input" type="search" placeholder="Music, Psychology, History…" value="{{ clsSearch }}" onChange="{{ onClsSearch }}" onInput="{{ onClsSearch }}" style="min-width:240px">
+        </label>
+        <button class="btn btn-secondary" onClick="{{ toggleUnknown }}" style="font-size:13px">{{ unknownLabel }}</button>
+        <div style="margin-left:auto;text-align:right">
+          <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Classifications in view</div>
+          <div style="font-size:22px;font-family:var(--font-heading)">{{ clsCount }}</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <div style="display:grid;grid-template-columns:250px 1fr 92px 86px 82px;align-items:center;gap:14px;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 55%, transparent)">
+          <span>Classification</span>
+          <span>{{ clsMetricLabel }}</span>
+          <span style="text-align:right">Items</span>
+          <span style="text-align:right">Loans</span>
+          <span style="text-align:right">Per item</span>
+        </div>
+        <sc-for list="{{ clsBars }}" as="b" hint-placeholder-count="12">
+          <div style="display:grid;grid-template-columns:250px 1fr 92px 86px 82px;align-items:center;gap:14px;font-size:13px;padding:3px 0;border-radius:4px" style-hover="background:color-mix(in srgb, var(--color-text) 5%, transparent)" title="{{ b.tip }}">
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:{{ b.labelColor }}">{{ b.group }}</span>
+            <span style="display:block;height:15px;background:color-mix(in srgb, var(--color-text) 6%, transparent);border-radius:3px">
+              <span style="display:block;height:15px;border-radius:3px;background:{{ b.fill }};width:{{ b.w }};min-width:1px"></span>
+            </span>
+            <span style="text-align:right;font-variant-numeric:tabular-nums">{{ b.items }}</span>
+            <span style="text-align:right;font-variant-numeric:tabular-nums">{{ b.loans }}</span>
+            <span style="text-align:right;font-variant-numeric:tabular-nums;color:var(--color-accent-300)">{{ b.ratio }}</span>
+          </div>
+        </sc-for>
+        <sc-if value="{{ clsEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:13px;color:color-mix(in srgb, var(--color-text) 60%, transparent)">No classifications match this search at the current minimum size.</div>
+        </sc-if>
+      </div>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 45%, transparent);text-wrap:pretty">{{ clsNote }}</div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;padding:14px 0 0;border-top:1px solid color-mix(in srgb, var(--color-text) 10%, transparent)">
+        <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent)">Subject highlights</div>
+        <div style="display:grid;gap:8px 24px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+          <sc-for list="{{ clsHighlights }}" as="h" hint-placeholder-count="3">
+            <div style="display:flex;gap:10px;align-items:baseline;font-size:13px">
+              <span style="color:var(--color-accent-300);white-space:nowrap;min-width:126px">{{ h.label }}</span>
+              <span style="color:color-mix(in srgb, var(--color-text) 78%, transparent);text-wrap:pretty">{{ h.text }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 45%, transparent);text-wrap:pretty">{{ unknownNote }}</div>
+    </div>
+  </section>
+
+  <section style="max-width:1280px;margin:0 auto;padding:56px 32px 0">
+    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:16px;justify-content:space-between;margin-bottom:6px">
+      <h2 style="font-size:26px;margin:0">Collection composition</h2>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 55%, transparent)">Items held by material type</div>
+    </div>
+    <p style="margin:0 0 20px;max-width:74ch;font-size:13px;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Item counts by material type, for items currently active in the collection. This is a snapshot of what the collection currently holds, not a record of additions over time.</p>
+
+    <div class="card elev-sm" style="padding:24px;gap:20px">
+      <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end">
+        <label class="field" style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Library</span>
+          <select class="input" style="min-width:260px" value="{{ matLib }}" onChange="{{ onMatLib }}">
+            <sc-for list="{{ matLibs }}" as="l" hint-placeholder-count="7">
+              <option value="{{ l }}">{{ l }}</option>
+            </sc-for>
+          </select>
+        </label>
+        <div style="text-align:right;margin-left:auto">
+          <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Active items in view</div>
+          <div style="font-size:22px;font-family:var(--font-heading)">{{ matTotal }}</div>
+        </div>
+        <button class="btn btn-secondary" onClick="{{ toggleMats }}">{{ matToggleLabel }}</button>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <sc-for list="{{ matBars }}" as="b" hint-placeholder-count="12">
+          <div style="display:grid;grid-template-columns:210px 1fr 100px 62px;align-items:center;gap:14px;font-size:13px;padding:3px 0;border-radius:4px" style-hover="background:color-mix(in srgb, var(--color-text) 5%, transparent)">
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:{{ b.labelColor }}">{{ b.material }}</span>
+            <span style="display:block;height:15px;background:color-mix(in srgb, var(--color-text) 6%, transparent);border-radius:3px">
+              <span style="display:block;height:15px;border-radius:3px;background:{{ b.fill }};width:{{ b.w }};min-width:1px"></span>
+            </span>
+            <span style="text-align:right;font-variant-numeric:tabular-nums">{{ b.items }}</span>
+            <span style="text-align:right;font-variant-numeric:tabular-nums;color:color-mix(in srgb, var(--color-text) 60%, transparent)">{{ b.pct }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="font-size:12px;color:color-mix(in srgb, var(--color-text) 45%, transparent)">{{ matNote }}</div>
+    </div>
+  </section>
+
+  <section style="max-width:1280px;margin:0 auto;padding:56px 32px 0">
+    <h2 style="font-size:26px;margin:0 0 6px">What stands out?</h2>
+    <p style="margin:0 0 20px;max-width:70ch;font-size:13px;color:color-mix(in srgb, var(--color-text) 60%, transparent)">Each statement below is calculated from the current filter selections.</p>
+    <div style="display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+      <sc-for list="{{ observations }}" as="o" hint-placeholder-count="4">
+        <div class="card elev-sm" style="padding:18px;gap:8px">
+          <div class="card-kicker">{{ o.kicker }}</div>
+          <div style="font-size:15px;line-height:1.5;text-wrap:pretty">{{ o.text }}</div>
+          <div style="font-size:11px;color:color-mix(in srgb, var(--color-text) 45%, transparent)">{{ o.source }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="max-width:1280px;margin:0 auto;padding:48px 32px 0">
+    <button class="btn btn-secondary" onClick="{{ toggleAbout }}" style="font-size:13px">{{ aboutLabel }}</button>
+    <sc-if value="{{ aboutOpen }}" hint-placeholder-val="{{ false }}">
+      <div class="card elev-sm" style="padding:24px;gap:16px;margin-top:16px;max-width:900px">
+        <div>
+          <div style="font-family:var(--font-heading);font-size:15px;margin-bottom:4px">01_monthly_loans.xlsx</div>
+          <p style="margin:0;font-size:13px;color:color-mix(in srgb, var(--color-text) 68%, transparent)">Columns: Loan Year, Loan Month Key, and an unnamed loan-count column. Powers the Loans KPI, the circulation trend chart, and the peak/lowest month figures. The export covers a rolling 12-month reporting window, {{ periodSpan }}, delivered as {{ monthRowCount }} monthly rows because both endpoint months are partial. {{ partialNote }}.</p>
+        </div>
+        <div>
+          <div style="font-family:var(--font-heading);font-size:15px;margin-bottom:4px">02_loans_by_patron_group.xlsx</div>
+          <p style="margin:0;font-size:13px;color:color-mix(in srgb, var(--color-text) 68%, transparent)">Columns: Library Name (Active), User Group, Loans (In House + Not In House), Year. Powers “Who is borrowing?”. Years {{ yearRange }} appear in the export, so its totals cover a much longer span than the circulation chart and are never combined with it. Blank Library Name or User Group values are labelled as not recorded.</p>
+        </div>
+        <div>
+          <div style="font-family:var(--font-heading);font-size:15px;margin-bottom:4px">04_inventory_by_location.xlsx</div>
+          <p style="margin:0;font-size:13px;color:color-mix(in srgb, var(--color-text) 68%, transparent)">Columns: Location Name, Loans, Loans/Items, Num of Items (In Repository), Library Name (Active). Powers “Recorded collection utilization”. Its Loans column is a recorded, cumulative Alma measure with no stated period; it is not the rolling circulation window and is not comparable to report 01. Loans/Items is blank where a location holds no items — those rows are excluded from the ranking rather than treated as zero.</p>
+        </div>
+        <div>
+          <div style="font-family:var(--font-heading);font-size:15px;margin-bottom:4px">Loans - Items ratio per Classification.xlsx</div>
+          <p style="margin:0;font-size:13px;color:color-mix(in srgb, var(--color-text) 68%, transparent)">Columns: Loans, Loans/Items, Num of Items (In Repository), Group1 (Holdings). Powers “Subject utilization”. The export holds {{ clsGroupCount }} classification groups totalling {{ clsItemsTotal }} items and {{ clsLoansTotal }} recorded loans, which matches reports 04 and 05 on items. Its Loans column is the same recorded, cumulative Alma measure as report 04 — not the rolling 12-month window — and is never combined with it. The report carries no Library field, so the section is institution-wide and deliberately does not respond to the library filters; ownership of a classification is not inferred. The classification group “Unknown” ({{ unknownShare }}) is excluded from the ranking by default and retained in the data.</p>
+        </div>
+        <div>
+          <div style="font-family:var(--font-heading);font-size:15px;margin-bottom:4px">05_items_added.xlsx</div>
+          <p style="margin:0;font-size:13px;color:color-mix(in srgb, var(--color-text) 68%, transparent)">Columns: Num of Items (In Repository), Material Type, Lifecycle, Library Name (Active). Used as current collection composition by material type, not as growth over time — the export carries no date dimension. Only Lifecycle “Active” rows are charted; Deleted and blank-lifecycle rows carry item counts of 0 in this export. Its Active total matches report 04’s item total exactly ({{ kpiItems }}), which is the cross-check behind the items KPI.</p>
+        </div>
+      </div>
+    </sc-if>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;defaultMinItems&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:500,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:0,&quot;max&quot;:5000,&quot;step&quot;:50,&quot;unit&quot;:&quot;items&quot;,&quot;section&quot;:&quot;Utilization&quot;},&quot;topMaterials&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:14,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:5,&quot;max&quot;:30,&quot;step&quot;:1,&quot;section&quot;:&quot;Composition&quot;}}">
+const MONTHS = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const ALL = 'All libraries';
+const NO_LIB = '(no library recorded)';
+const NO_GROUP = '(no user group recorded)';
+const nf = n => n == null ? '—' : n.toLocaleString('en-US');
+
+class Component extends DCLogic {
+  state = { d: null, pYear: null, pLib: ALL, invLib: ALL, minItems: null, matLib: ALL, showAllMats: false, hover: null, hoverMonth: null, aboutOpen: false, yoyOpen: false, yoyAll: false, sel: null, clsMetric: 'ratio', clsMin: 500, clsSearch: '', clsUnknown: false };
+
+  componentDidMount() {
+    import('./library-data.js').then(m => {
+      const years = [...new Set(m.patron.map(p => p.year))].sort();
+      // default to the most recent COMPLETE calendar year: the export's last
+      // circulation month sits inside the final year, so that year is partial.
+      const partialYear = String(m.monthly[m.monthly.length - 1].year);
+      const complete = years.filter(y => String(y) !== partialYear);
+      this.setState({ d: m, pYear: (complete.length ? complete : years)[(complete.length ? complete : years).length - 1] });
+    });
+  }
+
+  render0() { return {}; }
+
+  renderVals() {
+    const d = this.state.d;
+    const minItems = this.state.minItems ?? (this.props.defaultMinItems ?? 500);
+    const topN = this.props.topMaterials ?? 14;
+    const base = {
+      onYear: e => this.setState({ pYear: e.target.value }),
+      onPLib: e => this.setState({ pLib: e.target.value }),
+      onInvLib: e => this.setState({ invLib: e.target.value, sel: null }),
+      toggleYoy: () => this.setState(s => ({ yoyOpen: !s.yoyOpen })),
+      toggleYoyAll: () => this.setState(s => ({ yoyAll: !s.yoyAll })),
+      clearSel: () => this.setState({ sel: null }),
+      onMatLib: e => this.setState({ matLib: e.target.value }),
+      onMin: e => this.setState({ minItems: Number(e.target.value), sel: null }),
+      toggleMats: () => this.setState(s => ({ showAllMats: !s.showAllMats })),
+      toggleAbout: () => this.setState(s => ({ aboutOpen: !s.aboutOpen })),
+      onClsMin: e => this.setState({ clsMin: Number(e.target.value) }),
+      onClsSearch: e => this.setState({ clsSearch: e.target.value }),
+      toggleUnknown: () => this.setState(s => ({ clsUnknown: !s.clsUnknown })),
+      aboutOpen: this.state.aboutOpen,
+      aboutLabel: this.state.aboutOpen ? 'Hide “About the data”' : 'About the data',
+      minItems, minItemsLabel: nf(minItems),
+      pYear: this.state.pYear, pLib: this.state.pLib, invLib: this.state.invLib, matLib: this.state.matLib
+    };
+    if (!d) return base;
+
+    /* ---- 01 circulation ---- */
+    const mo = d.monthly;
+    const total = mo.reduce((a, b) => a + b.loans, 0);
+    const peak = mo.reduce((a, b) => b.loans > a.loans ? b : a);
+    // lowest COMPLETE month: the first and last rows are partial endpoints
+    const interior = mo.length > 2 ? mo.slice(1, -1) : mo;
+    const low = interior.reduce((a, b) => b.loans < a.loans ? b : a);
+    const lbl = m => MONTHS[m.month] + ' ' + m.year;
+    const W = 1000, L = 64, R = 984, T = 20, B = 300;
+    const maxY = Math.ceil(Math.max(...mo.map(m => m.loans)) / 200) * 200;
+    const yTicks = [];
+    for (let v = 0; v <= maxY; v += maxY / 5) {
+      const y = B - (v / maxY) * (B - T);
+      yTicks.push({ y, ty: y + 4, label: nf(v) });
+    }
+    const px = i => L + (i / (mo.length - 1)) * (R - L);
+    const py = v => B - (v / maxY) * (B - T);
+    const pts = mo.map((m, i) => {
+      const hovered = this.state.hoverMonth === i;
+      return {
+        cx: px(i), cy: py(m.loans), r: hovered ? 7 : 4.5,
+        fill: hovered ? 'var(--color-accent-200)' : 'var(--color-accent)',
+        short: MONTHS[m.month] + (m.month === 1 || i === 0 ? ' ’' + String(m.year).slice(2) : ''),
+        onEnter: () => this.setState({ hoverMonth: i }),
+        onLeave: () => this.setState({ hoverMonth: null })
+      };
+    });
+    const hm = this.state.hoverMonth;
+    const period = lbl(mo[0]) + ' – ' + lbl(mo[mo.length - 1]);
+
+    /* ---- 02 patron groups ---- */
+    const pRows = d.patron.filter(p => String(p.year) === String(this.state.pYear))
+      .filter(p => this.state.pLib === ALL || (p.library || NO_LIB) === this.state.pLib);
+    const pAgg = {};
+    pRows.forEach(p => { const k = p.group || NO_GROUP; pAgg[k] = (pAgg[k] || 0) + p.loans; });
+    const pSorted = Object.entries(pAgg).sort((a, b) => b[1] - a[1]);
+    const pTotal = pSorted.reduce((a, b) => a + b[1], 0);
+    const pMax = pSorted.length ? pSorted[0][1] : 1;
+    const patronBars = pSorted.map(([group, loans]) => ({
+      group, loans: nf(loans),
+      pct: pTotal ? (loans / pTotal * 100).toFixed(1) + '%' : '—',
+      w: (loans / pMax * 100).toFixed(2) + '%'
+    }));
+    const yearsRaw = [...new Set(d.patron.map(p => p.year))].sort();
+    const partialYear = String(mo[mo.length - 1].year);
+    const yearName = y => String(y) === partialYear ? String(y) + ' YTD' : String(y);
+    const years = yearsRaw.map(y => ({ value: String(y), label: yearName(y) }));
+    const patronLibs = [ALL, ...[...new Set(d.patron.map(p => p.library || NO_LIB))].sort()];
+
+    /* ---- year over year, complete years only ---- */
+    const completeYears = yearsRaw.filter(y => String(y) !== partialYear);
+    const yCurr = completeYears[completeYears.length - 1];
+    const yPrev = completeYears[completeYears.length - 2];
+    const aggYear = y => {
+      const out = {};
+      d.patron.filter(p => String(p.year) === String(y))
+        .filter(p => this.state.pLib === ALL || (p.library || NO_LIB) === this.state.pLib)
+        .forEach(p => { const k = p.group || NO_GROUP; out[k] = (out[k] || 0) + p.loans; });
+      return out;
+    };
+    const aCurr = yCurr != null ? aggYear(yCurr) : {};
+    const aPrev = yPrev != null ? aggYear(yPrev) : {};
+    const currTotal = Object.values(aCurr).reduce((a, b) => a + b, 0);
+    const yoyAllRows = [...new Set([...Object.keys(aCurr), ...Object.keys(aPrev)])].map(g => {
+      const curr = aCurr[g] || 0, prev = aPrev[g] || 0;
+      return { group: g, curr, prev, delta: curr - prev, major: currTotal ? (Math.max(curr, prev) / currTotal >= 0.01) : true };
+    }).sort((a, b) => b.curr - a.curr || b.prev - a.prev);
+    const yoyShown = this.state.yoyAll ? yoyAllRows : yoyAllRows.filter(r => r.major);
+    const maxAbs = Math.max(1, ...yoyShown.map(r => Math.abs(r.delta)));
+    const yoyRows = yoyShown.map(r => ({
+      group: r.group, curr: nf(r.curr), prev: nf(r.prev),
+      delta: (r.delta > 0 ? '+' : r.delta < 0 ? '−' : '') + nf(Math.abs(r.delta)),
+      pctChange: r.prev > 0 ? (r.delta >= 0 ? '+' : '−') + Math.abs(r.delta / r.prev * 100).toFixed(0) + '%' : (r.curr > 0 ? 'no prior loans' : '—'),
+      negW: r.delta < 0 ? (Math.abs(r.delta) / maxAbs * 100).toFixed(2) + '%' : '0%',
+      posW: r.delta > 0 ? (r.delta / maxAbs * 100).toFixed(2) + '%' : '0%',
+      deltaColor: r.delta > 0 ? 'var(--color-accent-300)' : r.delta < 0 ? 'color-mix(in srgb, var(--color-text) 62%, transparent)' : 'color-mix(in srgb, var(--color-text) 45%, transparent)',
+      labelColor: r.major ? 'var(--color-text)' : 'color-mix(in srgb, var(--color-text) 58%, transparent)'
+    }));
+
+    /* ---- 04 utilization ---- */
+    const invLibs = [ALL, ...[...new Set(d.inventory.map(r => r.library || NO_LIB))].sort()];
+    const invAll = d.inventory.filter(r => this.state.invLib === ALL || (r.library || NO_LIB) === this.state.invLib);
+    const inv = invAll.filter(r => r.items >= minItems);
+    const lg = v => Math.log10(Math.max(v, 1) + 1);
+    const sx0 = 66, sx1 = 608, sy0 = 20, sy1 = 392;
+    const maxItems = Math.max(10, ...inv.map(r => r.items));
+    const maxLoans = Math.max(10, ...inv.map(r => r.loans));
+    const decades = m => { const out = []; for (let e = 0; Math.pow(10, e) <= m * 1.2; e++) out.push(Math.pow(10, e)); return out; };
+    const fmtTick = v => v >= 1000 ? (v / 1000) + 'k' : String(v);
+    const xTicks = decades(maxItems).map(v => ({ x: sx0 + lg(v) / lg(maxItems) * (sx1 - sx0), label: fmtTick(v) }));
+    const yTicksS = decades(maxLoans).map(v => { const y = sy1 - lg(v) / lg(maxLoans) * (sy1 - sy0); return { y, ty: y + 4, label: fmtTick(v) }; });
+    const hovered = this.state.hover;
+    const scatterPts = inv.map((r, i) => ({
+      cx: sx0 + lg(r.items) / lg(maxItems) * (sx1 - sx0),
+      cy: sy1 - lg(r.loans) / lg(maxLoans) * (sy1 - sy0),
+      r: hovered === i || this.state.sel === i ? 8 : 5,
+      fill: this.state.sel === i ? 'var(--color-accent-100)' : hovered === i ? 'var(--color-accent-200)' : 'color-mix(in srgb, var(--color-accent) 55%, transparent)',
+      stroke: hovered === i || this.state.sel === i ? 'var(--color-accent-100)' : 'var(--color-accent-600)',
+      onEnter: () => this.setState({ hover: i }),
+      onLeave: () => this.setState({ hover: null }),
+      onClick: () => this.setState(s => ({ sel: s.sel === i ? null : i }))
+    }));
+    const hoverPoint = hovered != null && inv[hovered] ? {
+      location: inv[hovered].location, library: inv[hovered].library || NO_LIB,
+      items: nf(inv[hovered].items), loans: nf(inv[hovered].loans),
+      ratio: inv[hovered].ratio == null ? 'not reported' : inv[hovered].ratio.toFixed(2)
+    } : null;
+    const ranked = inv.filter(r => r.ratio != null).sort((a, b) => b.ratio - a.ratio);
+    const invRanked = ranked.slice(0, 12).map(r => ({
+      location: r.location, library: r.library || NO_LIB,
+      items: nf(r.items), loans: nf(r.loans), ratio: r.ratio.toFixed(2)
+    }));
+    const blankRatio = inv.filter(r => r.ratio == null).length;
+
+    /* medians of the displayed locations — descriptive reference lines only */
+    const median = arr => {
+      if (!arr.length) return 0;
+      const s = [...arr].sort((a, b) => a - b), h = Math.floor(s.length / 2);
+      return s.length % 2 ? s[h] : (s[h - 1] + s[h]) / 2;
+    };
+    const medItems = median(inv.map(r => r.items));
+    const medLoans = median(inv.map(r => r.loans));
+    const sxOf = v => sx0 + lg(v) / lg(maxItems) * (sx1 - sx0);
+    const syOf = v => sy1 - lg(v) / lg(maxLoans) * (sy1 - sy0);
+    const zoneText = r => (r.items >= medItems ? 'Larger collection' : 'Smaller collection') + ' · ' + (r.loans >= medLoans ? 'higher' : 'lower') + ' recorded loans, measured against the medians of the locations shown. Descriptive position only.';
+    const pctRank = (v, arr) => arr.length < 2 ? '—' : Math.round(arr.filter(x => x < v).length / (arr.length - 1) * 100) + '% of locations shown rank lower';
+    const itemsArr = inv.map(r => r.items), loansArr = inv.map(r => r.loans), ratioArr = inv.filter(r => r.ratio != null).map(r => r.ratio);
+    const selRow = this.state.sel != null ? inv[this.state.sel] : null;
+    const profile = selRow ? {
+      location: selRow.location, library: selRow.library || NO_LIB,
+      zone: zoneText(selRow),
+      stats: [
+        { label: 'Items held', value: nf(selRow.items), note: pctRank(selRow.items, itemsArr) + ' by size' },
+        { label: 'Recorded loans', value: nf(selRow.loans), note: pctRank(selRow.loans, loansArr) + ' by loans' },
+        { label: 'Loans per item', value: selRow.ratio == null ? 'not reported' : selRow.ratio.toFixed(2), note: selRow.ratio == null ? 'no value in the source' : pctRank(selRow.ratio, ratioArr) + ' by loans per item' },
+        { label: 'Relative size', value: inv.length ? (selRow.items / Math.max(...itemsArr) * 100).toFixed(1) + '%' : '—', note: 'of the largest location shown' },
+        { label: 'Relative utilization', value: (selRow.ratio != null && ratioArr.length) ? (selRow.ratio / Math.max(...ratioArr) * 100).toFixed(1) + '%' : '—', note: 'of the highest loans-per-item shown' }
+      ]
+    } : null;
+
+    /* ---- library snapshot, driven by the utilization library filter ---- */
+    const totalItemsAll = d.inventory.reduce((a, b) => a + b.items, 0);
+    const libItems = invAll.reduce((a, b) => a + b.items, 0);
+    const libLoans = invAll.reduce((a, b) => a + b.loans, 0);
+    const biggestLoc = invAll.length ? invAll.reduce((a, b) => b.items > a.items ? b : a) : null;
+    const topRatioLoc = ranked.length ? ranked[0] : null;
+    const snapMats = {};
+    d.materials.filter(r => r.lifecycle === 'Active')
+      .filter(r => this.state.invLib === ALL || (r.library || NO_LIB) === this.state.invLib)
+      .forEach(r => { snapMats[r.material] = (snapMats[r.material] || 0) + r.items; });
+    const snapTopMat = Object.entries(snapMats).sort((a, b) => b[1] - a[1])[0];
+    const isAll = this.state.invLib === ALL;
+    const libCount = new Set(d.inventory.map(r => r.library || NO_LIB)).size;
+    const snapshot = {
+      heading: isAll ? 'Institutional snapshot' : 'Library snapshot',
+      sub: isAll ? libCount + ' libraries represented' : this.state.invLib,
+      stats: [
+        { label: 'Physical items held', value: nf(libItems), note: isAll ? 'all libraries represented' : (libItems / totalItemsAll * 100).toFixed(1) + '% of items represented' },
+        { label: 'Largest material type', value: snapTopMat ? snapTopMat[0] : '—', note: snapTopMat ? nf(snapTopMat[1]) + ' items' : 'no active items in view' },
+        { label: 'Largest location', value: biggestLoc ? biggestLoc.location : '—', note: biggestLoc ? nf(biggestLoc.items) + ' items' : '—' },
+        { label: 'Highest loans per item', value: topRatioLoc ? topRatioLoc.ratio.toFixed(2) : '—', note: topRatioLoc ? topRatioLoc.location + ' · at least ' + nf(minItems) + ' items' : 'no location meets the threshold' },
+        { label: 'Recorded loans', value: nf(libLoans), note: 'cumulative, not the 12-month window' }
+      ]
+    };
+
+    /* ---- collections to explore ---- */
+    const byLoans = invAll.length ? invAll.reduce((a, b) => b.loans > a.loans ? b : a) : null;
+    const smallHeavy = inv.filter(r => r.ratio != null && r.items < medItems).sort((a, b) => b.ratio - a.ratio)[0];
+    const explore = [
+      topRatioLoc ? { label: 'Most loans per item', text: topRatioLoc.location + ' — ' + topRatioLoc.ratio.toFixed(2) + ' recorded loans per item across ' + nf(topRatioLoc.items) + ' items.' } : null,
+      byLoans ? { label: 'Most recorded loans', text: byLoans.location + ' — ' + nf(byLoans.loans) + ' recorded loans across ' + nf(byLoans.items) + ' items.' } : null,
+      biggestLoc ? { label: 'Largest collection', text: biggestLoc.location + ' — ' + nf(biggestLoc.items) + ' items, ' + nf(biggestLoc.loans) + ' recorded loans.' } : null,
+      smallHeavy ? { label: 'Smaller, heavily used', text: smallHeavy.location + ' — below the median size of the locations shown (' + nf(medItems) + ' items) at ' + smallHeavy.ratio.toFixed(2) + ' recorded loans per item.' } : null
+    ].filter(Boolean);
+
+    /* ---- subject utilization, institution-wide (no library field) ---- */
+    const cls = d.classification || [];
+    const clsMin = this.state.clsMin;
+    const clsMetric = this.state.clsMetric;
+    const q = this.state.clsSearch.trim().toLowerCase();
+    const clsTotalItems = cls.reduce((a, b) => a + b.items, 0);
+    const unknownRow = cls.find(r => /^unknown$/i.test(r.group));
+    const clsPool = cls
+      .filter(r => this.state.clsUnknown || !/^unknown$/i.test(r.group))
+      .filter(r => r.items >= clsMin)
+      .filter(r => !q || r.group.toLowerCase().includes(q));
+    const metricOf = r => clsMetric === 'loans' ? r.loans : clsMetric === 'items' ? r.items : r.ratio;
+    const clsSorted = [...clsPool].sort((a, b) => metricOf(b) - metricOf(a));
+    const clsTop = clsSorted.slice(0, 12);
+    const clsMax = clsTop.length ? metricOf(clsTop[0]) : 1;
+    const clsBars = clsTop.map(r => ({
+      group: r.group,
+      items: nf(r.items), loans: nf(r.loans), ratio: r.ratio == null ? '—' : r.ratio.toFixed(2),
+      w: (metricOf(r) / clsMax * 100).toFixed(3) + '%',
+      fill: /^unknown$/i.test(r.group) ? 'var(--color-neutral-400)' : 'var(--color-accent-500)',
+      labelColor: /^unknown$/i.test(r.group) ? 'color-mix(in srgb, var(--color-text) 60%, transparent)' : 'var(--color-text)',
+      tip: r.group + ' — ' + nf(r.items) + ' items, ' + nf(r.loans) + ' recorded loans, ' + (r.ratio == null ? 'no' : r.ratio.toFixed(2)) + ' loans per item'
+    }));
+    const metricLabels = { ratio: 'Utilization · loans per item', loans: 'Recorded loans', items: 'Collection size · items' };
+    const clsMetrics = [['ratio', 'Utilization'], ['loans', 'Recorded loans'], ['items', 'Collection size']].map(([k, label]) => ({
+      label, onPick: () => this.setState({ clsMetric: k }),
+      bg: clsMetric === k ? 'color-mix(in srgb, var(--color-accent) 22%, transparent)' : 'transparent',
+      fg: clsMetric === k ? 'var(--color-accent-200)' : 'color-mix(in srgb, var(--color-text) 70%, transparent)'
+    }));
+    const byRatio = [...clsPool].sort((a, b) => b.ratio - a.ratio)[0];
+    const byLoansCls = [...clsPool].sort((a, b) => b.loans - a.loans)[0];
+    const byItemsCls = [...clsPool].sort((a, b) => b.items - a.items)[0];
+    const clsHighlights = [
+      byRatio ? { label: 'Most loans per item', text: byRatio.group + ' — ' + byRatio.ratio.toFixed(2) + ' recorded loans per item across ' + nf(byRatio.items) + ' items.' } : null,
+      byLoansCls ? { label: 'Most recorded loans', text: byLoansCls.group + ' — ' + nf(byLoansCls.loans) + ' recorded loans across ' + nf(byLoansCls.items) + ' items.' } : null,
+      byItemsCls ? { label: 'Largest classification', text: byItemsCls.group + ' — ' + nf(byItemsCls.items) + ' items, ' + byItemsCls.ratio.toFixed(2) + ' recorded loans per item.' } : null
+    ].filter(Boolean);
+
+    /* ---- 05 composition ---- */
+    const matLibs = [ALL, ...[...new Set(d.materials.map(r => r.library || NO_LIB))].sort()];
+    const mRows = d.materials.filter(r => r.lifecycle === 'Active')
+      .filter(r => this.state.matLib === ALL || (r.library || NO_LIB) === this.state.matLib);
+    const mAgg = {};
+    mRows.forEach(r => { mAgg[r.material] = (mAgg[r.material] || 0) + r.items; });
+    const mSorted = Object.entries(mAgg).sort((a, b) => b[1] - a[1]);
+    const mTotal = mSorted.reduce((a, b) => a + b[1], 0);
+    const mMax = mSorted.length ? mSorted[0][1] : 1;
+    const shown = this.state.showAllMats ? mSorted : mSorted.slice(0, topN);
+    const matBars = shown.map(([material, items], i) => {
+      const minor = items / (mTotal || 1) < 0.005;
+      return {
+        material, items: nf(items),
+        pct: mTotal ? (items / mTotal * 100).toFixed(items / mTotal < 0.001 ? 2 : 1) + '%' : '—',
+        w: (items / mMax * 100).toFixed(3) + '%',
+        fill: minor ? 'var(--color-accent-700)' : 'var(--color-accent-500)',
+        labelColor: minor ? 'color-mix(in srgb, var(--color-text) 60%, transparent)' : 'var(--color-text)'
+      };
+    });
+
+    /* ---- observations ---- */
+    const topMat = mSorted[0];
+    const obs = [
+      { kicker: 'Circulation', source: 'Monthly circulation', text: 'Circulation peaked in ' + lbl(peak) + ' at ' + nf(peak.loans) + ' loans; the lowest complete month was ' + lbl(low) + ' at ' + nf(low.loans) + ', across ' + nf(total) + ' loans in the rolling 12-month period ' + period + ' (' + lbl(mo[0]) + ' and ' + lbl(mo[mo.length - 1]) + ' are partial months).' },
+      { kicker: 'Borrowers · ' + yearName(this.state.pYear), source: 'Borrowing by type', text: pSorted.length ? pSorted[0][0] + ' recorded the most loans in ' + yearName(this.state.pYear) + ': ' + nf(pSorted[0][1]) + ' of ' + nf(pTotal) + ' (' + (pSorted[0][1] / pTotal * 100).toFixed(1) + '%) for the current library filter.' : 'No loans are recorded for ' + yearName(this.state.pYear) + ' under the current library filter.' },
+      { kicker: 'Utilization', source: 'Recorded utilization', text: ranked.length ? ranked[0].location + ' (' + (ranked[0].library || NO_LIB) + ') has the highest recorded loans-per-item ratio among locations of at least ' + nf(minItems) + ' items: ' + ranked[0].ratio.toFixed(2) + ' on ' + nf(ranked[0].items) + ' items.' : 'No locations meet the current size threshold of ' + nf(minItems) + ' items.' },
+      { kicker: 'Composition', source: 'Collection composition', text: topMat ? topMat[0] + ' is the largest material type in view at ' + nf(topMat[1]) + ' items, ' + (topMat[1] / mTotal * 100).toFixed(1) + '% of the ' + nf(mTotal) + ' active items shown, across ' + mSorted.length + ' material types.' : 'No active items match the current library filter.' }
+    ];
+
+    return Object.assign(base, {
+      periodLabel: 'Rolling 12-month period · partial endpoint months',
+      periodSpan: period,
+      partialNote: 'Partial months: ' + lbl(mo[0]) + ' and ' + lbl(mo[mo.length - 1]),
+      monthRowCount: mo.length,
+      yearIncomplete: String(this.state.pYear) === partialYear,
+      yearLabel: yearName(this.state.pYear),
+      kpiLoans: nf(total),
+      kpiItems: nf(d.inventory.reduce((a, b) => a + b.items, 0)),
+      kpiPeakMonth: lbl(peak), kpiPeakLoans: nf(peak.loans),
+      peakLabel: lbl(peak) + ' · ' + nf(peak.loans) + (peak === mo[0] || peak === mo[mo.length - 1] ? ' (partial)' : ''),
+      lowLabel: lbl(low) + ' · ' + nf(low.loans),
+      monthReadout: hm != null ? lbl(mo[hm]) + ' · ' + nf(mo[hm].loans) : '—',
+      kpiTopMaterial: topMat ? topMat[0] : '—',
+      kpiTopMaterialCount: topMat ? nf(topMat[1]) : '—',
+      line: {
+        yTicks, pts, points: mo.map((m, i) => px(i) + ',' + py(m.loans)).join(' '),
+        labels: [
+          ...yTicks.map((t, i) => React.createElement('text', { key: 'y' + i, x: 56, y: t.ty, textAnchor: 'end', fill: '#9397ab', fontSize: 13 }, t.label)),
+          ...mo.map((m, i) => React.createElement('text', { key: 'x' + i, x: px(i), y: 330, textAnchor: 'middle', fill: '#9397ab', fontSize: 13 }, MONTHS[m.month] + (m.month === 1 || i === 0 ? ' ’' + String(m.year).slice(2) : '')))
+        ]
+      },
+      years, patronLibs, patronBars, patronTotal: nf(pTotal), patronEmpty: pSorted.length === 0,
+      yearRange: yearsRaw[0] + '–' + yearsRaw[yearsRaw.length - 1],
+      invLibs, invCount: nf(inv.length),
+      scatter: {
+        pts: scatterPts, xTicks, yTicks: yTicksS,
+        medX: sxOf(medItems), medY: syOf(medLoans),
+        medNote: 'Dashed lines mark the medians of the locations shown — ' + nf(medItems) + ' items, ' + nf(medLoans) + ' recorded loans. The four zones read: smaller collection · higher recorded loans; larger collection · higher recorded loans; smaller collection · lower recorded loans; larger collection · lower recorded loans.',
+        labels: [
+          ...yTicksS.map((t, i) => React.createElement('text', { key: 'y' + i, x: 58, y: t.ty, textAnchor: 'end', fill: '#9397ab', fontSize: 12 }, t.label)),
+          ...xTicks.map((t, i) => React.createElement('text', { key: 'x' + i, x: t.x, y: 412, textAnchor: 'middle', fill: '#9397ab', fontSize: 12 }, t.label))
+        ]
+      },
+      hoverPoint, invRanked, profile, snapshot, explore,
+      yoyOpen: this.state.yoyOpen, yoyRows, yoyCurr: yCurr, yoyPrev: yPrev,
+      yoyLabel: this.state.yoyOpen ? 'Hide ' + yPrev + ' vs ' + yCurr + ' comparison' : 'Compare ' + yPrev + ' with ' + yCurr,
+      yoyHint: 'Complete calendar years only — the year-to-date year is excluded.',
+      yoyAllLabel: this.state.yoyAll ? 'Show main borrower types only' : 'Show all ' + yoyAllRows.length + ' borrower types',
+      yoyNote: (this.state.yoyAll ? 'All ' : 'Showing ' + yoyShown.length + ' of ') + yoyAllRows.length + ' borrower types; smaller types are dimmed but kept at their recorded values. Bars are scaled to the largest change shown.',
+      invRankedNote: ranked.length > 12 ? 'Showing the 12 highest of ' + nf(ranked.length) + ' locations meeting the threshold.' : nf(ranked.length) + ' locations meeting the threshold.',
+      invBlankNote: blankRatio ? blankRatio + ' location row(s) in view report no loans-per-item value; they are plotted but excluded from the ranking rather than counted as zero.' : 'Every location in view reports a loans-per-item value.',
+      clsMetrics, clsBars, clsHighlights,
+      clsGroupCount: nf(cls.length), clsItemsTotal: nf(clsTotalItems), clsLoansTotal: nf(cls.reduce((a, b) => a + b.loans, 0)),
+      unknownShare: unknownRow ? nf(unknownRow.items) + ' items, ' + (unknownRow.items / clsTotalItems * 100).toFixed(1) + '% of represented inventory' : '—',
+      clsMin: String(clsMin), clsSearch: this.state.clsSearch,
+      clsMinOptions: [100, 500, 1000, 5000, 10000].map(v => ({ value: String(v), label: nf(v) + '+' })),
+      clsMetricLabel: metricLabels[clsMetric],
+      clsCount: nf(clsPool.length),
+      clsEmpty: clsPool.length === 0,
+      unknownLabel: this.state.clsUnknown ? 'Exclude “Unknown”' : 'Include “Unknown”',
+      clsNote: 'Showing the top ' + clsTop.length + ' of ' + nf(clsPool.length) + ' classifications with at least ' + nf(clsMin) + ' items, ranked by ' + metricLabels[clsMetric].toLowerCase() + '. Institution-wide: this information carries no library breakdown. Alma classification labels are shown as recorded.',
+      unknownNote: unknownRow ? 'Data quality: ' + nf(unknownRow.items) + ' items (' + (unknownRow.items / clsTotalItems * 100).toFixed(1) + '% of represented inventory) are recorded in the classification group “Unknown”, with ' + nf(unknownRow.loans) + ' recorded loans and ' + unknownRow.ratio.toFixed(2) + ' loans per item. It is excluded from the ranking by default and can be included with the control above; it is never removed from the underlying data.' : '',
+      matLibs, matBars, matTotal: nf(mTotal),
+      matToggleLabel: this.state.showAllMats ? 'Show top ' + topN + ' types' : 'Show all ' + mSorted.length + ' types',
+      matNote: (this.state.showAllMats ? 'All ' : 'Top ' + Math.min(topN, mSorted.length) + ' of ') + mSorted.length + ' material types. Types under 0.5% of items in view are dimmed but retained at their exported values.',
+      observations: obs
+    });
+  }
+}
+</script>
+</body>
+</html>
